@@ -15,28 +15,27 @@ void Stepper::Stepper(int enablePin, int pulsePin, int dirPin) {
 	currentAccel	= 0;
 }
 
-void pcmdOn() {
+void Stepper::pcmdOn() {
 	digitalWrite(_enablePin, HIGH);
 }
 
-void pcmdOff() {
+void Stepper::pcmdOff() {
 	digitalWrite(_enablePin, LOW);
 
 }
 
-void pcmdStart(int dir, int accel, int speed, long pulses) {
+void Stepper::pcmdStart(int dir, int accel, int speed, long pulses) {
 	digitalWrite(_dirPin, dir);
 	digitalWrite(_enablePin, HIGH);
 	_pulses = 0;
 	_currentSpeed = 0;
+	_stop = 0;
+
+	this->_pcmdRun(accel, speed, pulses);
 
 }
 
-void pcmdStop() {
-	digitalWrite(_pulseP)
-}
-
-void pcmdRun(int accel, int speed, long pulses) {
+void Stepper::_pcmdRun(int accel, int speed, long pulses) {
 	int currentSpeed = 0;
 	long pulsesToTargetSpeed = speed / accel;
 	while (currentPulses < pulses) {
@@ -66,5 +65,5 @@ void pcmdRun(int accel, int speed, long pulses) {
 		delayMicroseconds((1/speed) - 50)
 		currentPulses++;
 	}
-	pcmd
+
 }

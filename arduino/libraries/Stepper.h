@@ -9,7 +9,6 @@ class Stepper {
     void pcmdOn();
 	void pcmdOff();
 	void pcmdStart(int dir, int accel, int speed, long pulses);
-	void pcmdStop();
 
 	long currentPulses;
 	int currentSpeed;
