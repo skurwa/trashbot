@@ -18,8 +18,8 @@ class Stepper {
 	int  _pulsePin;
 	int  _dirPin;
 
-	int	 _currentSpeed;
-	long _pulses;
+	int	 currentSpeed;
+	long currentPulses;
 
 	void _pcmdRun(int accel, int speed, long pulses);
 
