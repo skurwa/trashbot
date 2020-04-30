@@ -1,17 +1,11 @@
 #include <Wire.h>
+#include <Stepper.h>
 
 #define OUT_PAYLOAD_SIZE  5
 #define ADDRESS           2
 #define COUNTERCLOCKWISE  0
 #define CLOCKWISE         1
 #define HIGH_TIME_MICROSEC  15
-
-class Motor {
-  int enablePin;
-  int 
-}
-
-
 
 // pin definition
 const int motorAEnablePin = 28;
@@ -25,33 +19,19 @@ const int motorBDirPin    = 5;
 const int maxFreq         =  (1000000 / HIGH_TIME_MICROSEC);
 long heartBeatTime        = 0;
 int freqInput           = 0;
+int lastFreqInput       = 0;
 String freqInputString  = "";
 bool stringComplete       = false;
 
+Stepper motorA(motorAEnablePin, motorAStepPin, motorADirPin);
+
 void setup() {
-  // pin declarations
-  pinMode(LED_BUILTIN, OUTPUT);
-  
-  pinMode(motorAEnablePin, OUTPUT);
-  pinMode(motorAStepPin, OUTPUT);
-  pinMode(motorADirPin, OUTPUT);
-  
-  pinMode(motorBEnablePin, OUTPUT);
-  pinMode(motorBStepPin, OUTPUT);
-  pinMode(motorBDirPin, OUTPUT);
-
-
   Serial.begin(9600);
 //  // start I2C comm
 //  Wire.begin(ADDRESS);
 //  Wire.onRequest(requestEvent);
 //  Wire.onReceive(receiveEvent);
 
-  digitalWrite(motorAEnablePin, 1);
-  digitalWrite(motorAStepPin, 0);
-  digitalWrite(motorADirPin, CLOCKWISE);
-  digitalWrite(motorBStepPin, 0);
-  digitalWrite(motorBDirPin, 0);
 }
 
 void loop() {  
@@ -63,15 +43,13 @@ void loop() {
     Serial.println(freqInput);
   }
 
-  if (freqInput != 0 && freqInput < maxFreq) {
-    int periodInput = 1000000 / (freqInput);
-    digitalWrite(motorAStepPin, 1);
-    delayMicroseconds(HIGH_TIME_MICROSEC);
-    digitalWrite(motorAStepPin, 0);
-    delayMicroseconds(periodInput - HIGH_TIME_MICROSEC);
+  if (freqInput != 0 && freqInput < maxFreq && freqInput != lastFreqInput) {
+    motorA.pcmdOn();
+    motorA.pcmdStart(1, 20, freqInput, 5000);
+    lastFreqInput = freqInput;
   }
   else if (freqInput == 0) {
-    digitalWrite(motorAStepPin, 0);
+    motorA.pcmdOff();
   }
 }
 
@@ -93,15 +71,6 @@ void serialEvent() {
   }
 }
 
-// accelerate to freq target
-void pcmdRun(int motor, int accel, int speed, int dir) {
-  if dir == CLOCKWISE {
-    digitalWrite(
-  }
-  else {
-    
-  }
-}
 //// when master asks for data
 //void requestEvent() {
 //  // payload container
