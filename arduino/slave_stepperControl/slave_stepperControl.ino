@@ -1,16 +1,17 @@
 #include <Wire.h>
 #include <StepperMotor.h>
 
+// COUNTERCLOCKWISE DIR		0
+// CLOCKWISE DIR       		1
+
 #define OUT_PAYLOAD_SIZE      5
 #define ADDRESS               2
-#define COUNTERCLOCKWISE  		0
-#define CLOCKWISE         		1
 #define MIN_LOW_TIME_MICROSEC	20
 
 // pin definition
-const int motorAEnablePin = 53;
-const int motorADirPin    = 51;
-const int motorAStepPin   = 49;
+const int motorAEnablePin = 7;
+const int motorADirPin    = 8;
+const int motorAStepPin   = 9;
 
 const int maxSpeed      	  = (1000000 / MIN_LOW_TIME_MICROSEC);
 unsigned long heartBeatTime = 0;
