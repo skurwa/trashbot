@@ -10,7 +10,6 @@ A_dm2Pin    = 16
 A_stepPin   = 13
 A_dirPin    = 6
 A_fltPin    = 22
-
 A_limMinPin = 23
 A_limMaxPin = 24
 
