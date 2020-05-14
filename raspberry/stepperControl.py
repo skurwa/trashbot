@@ -1,4 +1,6 @@
 # helper functions
+from time import sleep
+import pigpio
 
 def generate_ramp(pi, ramp):
     """Generate ramp wave forms.

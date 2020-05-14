@@ -1,0 +1,8 @@
+5/14 (11 AM - ):
+    - Limit switches wired to 5V VCC - this will damage 3.3V GPIO pins
+        - updated wiring to use 3.3V from GPIO input pull-up and send common to ground
+    - Program gets hung during pi.set_pull_up_down(PIN, pigpio.PUD_UP)
+        - troubleshooting; could be related to experimental release for RPi4B
+        - updated/upgraded software -> resolved issue
+    
+
