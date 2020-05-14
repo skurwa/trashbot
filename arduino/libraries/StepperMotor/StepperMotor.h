@@ -9,7 +9,7 @@ class StepperMotor {
 		int  _stepPin;
 		int  _dirPin;
 		bool _alternator;
-		int  _currentMoveSteps;
+		int  _curMoveSteps;
 		unsigned long _lastMicros;
 
 	public:
@@ -19,9 +19,10 @@ class StepperMotor {
 		bool stsIdle;
 		bool stsMoveComplete;
 		bool stsMoveFailed;
+		bool stsHomeRefOK;
 
-		int	currentSpeed;
-		int	currentPosition;
+		int	curSpeed;
+		int	curPose;
 
 		StepperMotor(int enablePin, int stepPin, int dirPin);
 		void cmdOn();

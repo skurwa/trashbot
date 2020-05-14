@@ -2,11 +2,16 @@
 #include "StepperMotor.h"
 
 // constructor
-StepperMotor::StepperMotor(int enablePin, int stepPin, int dirPin) {
+StepperMotor::StepperMotor(int enablePin, int stepPin, int dirPin, int dm0Pin, int dm1Pin, int dm2Pin, int faultPin) {
 	// assign pin settings
 	pinMode(enablePin, OUTPUT);
 	pinMode(stepPin, OUTPUT);
 	pinMode(dirPin, OUTPUT);
+	pinMode(dm0Pin, OUTPUT);
+	pinMode(dm1Pin, OUTPUT);
+	pinMode(dm2Pin, OUTPUT);
+	pinMode(resetPin, OUTPUT);
+	pinMode(faultPin, INPUT);
 
 	// initialize private values
 	this->_enablePin	= enablePin;
@@ -14,11 +19,11 @@ StepperMotor::StepperMotor(int enablePin, int stepPin, int dirPin) {
 	this->_dirPin 		= dirPin;
 	this->_alternator 	= true;
 	this->_lastMicros 	= 0;
-	this->_currentMoveSteps	= 0;
+	this->_curMoveSteps	= 0;
 
 	// initialize public values
-	this->currentSpeed 	= 0;
-	this->currentPosition = 0;
+	this->curSpeed 	= 0;
+	this->curPose = 0;
 
 	// initialize status bits
 	this->stsOn 		= false;
@@ -62,7 +67,7 @@ bool StepperMotor::cmdRun(int dir, int accel, int speed, int targetSteps) {
 	bool alternator = true;
 	
 	// only run if there are steps left to run
-	if (this->_currentMoveSteps < targetSteps) {
+	if (this->_curMoveSteps < targetSteps) {
 	
 		// send a step
 		if (this->_alternator) {
@@ -80,7 +85,7 @@ bool StepperMotor::cmdRun(int dir, int accel, int speed, int targetSteps) {
 		}
 		else {
 			// if variable time (depending on speed) has elapsed
-			if (((unsigned long) (micros() - this->_lastMicros)) > (1000000 / this->currentSpeed)) {
+			if (((unsigned long) (micros() - this->_lastMicros)) > (1000000 / this->curSpeed)) {
 				// send step step
 				digitalWrite(this->_stepPin, LOW);
 
@@ -94,7 +99,7 @@ bool StepperMotor::cmdRun(int dir, int accel, int speed, int targetSteps) {
 				this->_alternator = !this->_alternator;
 				
 				// increment step count
-				this->_currentMoveSteps++;
+				this->_curMoveSteps++;
 			}
 		}
 
@@ -129,8 +134,8 @@ bool StepperMotor::cmdStop() {
 // reset motor values
 void StepperMotor::cmdReset() {
 	// reset accumulators
-	this->_currentMoveSteps = 0;
-	this->currentSpeed  = 0;
+	this->_curMoveSteps = 0;
+	this->curSpeed  = 0;
 	this->_lastMicros   = 0;
 
 	// reset status bits
@@ -144,7 +149,7 @@ void StepperMotor::cmdHome(int dir, int home) {
 }
 
 void StepperMotor::cmdMove(int accel, int speed, int targetPosition) {
-	int move = currentPosition - targetPosition;
+	int move = curPose - targetPosition;
 	if 
 }
 
@@ -157,23 +162,23 @@ void StepperMotor::updateMotion(int accel, int speed, int targetSteps) {
 	// triangular motion profile; cannot reach target speed
 	if (stepsToTargetSpeed > halfPath) {
 		// accelerate
-		if (this->_currentMoveSteps <= halfPath) {
-			this->currentSpeed = this->currentSpeed + accel;
+		if (this->_curMoveSteps <= halfPath) {
+			this->curSpeed = this->curSpeed + accel;
 		}
 		// decelerate
-		else if (this->_currentMoveSteps > halfPath) {
-			this->currentSpeed = this->currentSpeed - accel;
+		else if (this->_curMoveSteps > halfPath) {
+			this->curSpeed = this->curSpeed - accel;
 		}
 	}
 	// trapezoidal motion profile or triangular motion profile with momentary target speed
 	else if (stepsToTargetSpeed <= halfPath) {
 		// accelerate
-		if (this->_currentMoveSteps < stepsToTargetSpeed) {
-			this->currentSpeed = this->currentSpeed + accel;
+		if (this->_curMoveSteps < stepsToTargetSpeed) {
+			this->curSpeed = this->curSpeed + accel;
 		}
 		// decelerate
-		else if (this->_currentMoveSteps > (targetSteps - stepsToTargetSpeed)) {
-			this->currentSpeed = this->currentSpeed - accel;
+		else if (this->_curMoveSteps > (targetSteps - stepsToTargetSpeed)) {
+			this->curSpeed = this->curSpeed - accel;
 		}
 	}
 }
