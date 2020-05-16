@@ -3,40 +3,19 @@ from time import sleep
 import pigpio
 
 class StepperMotor:
-    def __init__(self, daemon, enabPin, dm0Pin, dm1Pin, dm2Pin, stepPin, dirPin, fltPin, limMinPin, limMaxPin):
-        self.enabPin     = enabPin
-        self.dm0Pin      = dm0Pin
-        self.dm1Pin      = dm1Pin
-        self.dm2Pin      = dm2Pin
-        self.stepPin     = stepPin
-        self.dirPin      = dirPin
-        self.fltPin      = fltPin
-        self.limitMinPin = limitMinPin
-        self.limitMaxPin = limitMaxPin
-        self.daemon      = daemon
+    def __init__(self, daemon, enabPin, stepPin, dirPin):
+        self.enabPin = enabPin
+        self.stepPin = stepPin
+        self.dirPin  = dirPin
+        self.daemon  = daemon
 
         daemon.set_mode(enabPin, pigpio.OUTPUT)
-        daemon.set_mode(dm0Pin, pigpio.OUTPUT)
-        daemon.set_mode(dm1Pin, pigpio.OUTPUT)
-        daemon.set_mode(dm2Pin, pigpio.OUTPUT)
         daemon.set_mode(dirPin, pigpio.OUTPUT)
         daemon.set_mode(stepPin, pigpio.OUTPUT)
-        daemon.set_mode(limMaxPin, pigpio.INPUT)
-        daemon.set_mode(limMinPin, pigpio.INPUT)
-        daemon.set_mode(fltPin, pigpio.INPUT)
-        daemon.set_pull_up_down(A_limMaxPin, pigpio.PUD_UP)
-        daemon.set_pull_up_down(A_limMinPin, pigpio.PUD_UP)
 
-    def travelLimitCheck(self):
-        if (self.daemon.read(self.limitMinPin) == 0 or self.daemon.read(self.limitMaxPin) == 0):
-            self.daemon.write(self.enabPin, 1) 
-            print("hit travel limits")
-
-        
-
-
-
-
+    def switchEnabState(self):
+        self.daemon.write(self.enabPin, not bool(self.daemon.read(self.enabPin)))
+        return self.daemon.read(self.enabPin)
 
 # helpers
 
