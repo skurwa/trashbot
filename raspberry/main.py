@@ -41,9 +41,23 @@ try:
         else:
             pi.write(A_enabPin, 0)
             print("enabled")
-        if (pi.read(A_fltPin)):
-            print("faulted")        
-        sleep(1)
+        if (pi.read(A_fltPin) == 0):
+            pi.write(A_dm0Pin, 0)
+            pi.write(A_dm1Pin, 0)
+            pi.write(A_dm2Pin, 0)
+            print("faulted")
+        pi.write(A_stepPin, 0)
+        pi.write(A_dirPin, 0)
+        print("dm0: " + str(pi.read(A_dm0Pin)))
+        print("dm1: " + str(pi.read(A_dm1Pin)))
+        print("dm2: " + str(pi.read(A_dm2Pin)))
+        if not pi.read(A_dm2Pin):
+            pi.write(A_dm2Pin, 1)
+        sleep(.5)
 except KeyboardInterrupt:
+    pi.write(A_dm0Pin, 0)
+    pi.write(A_dm1Pin, 0)
+    pi.write(A_dm2Pin, 0)
+    pi.write(A_enabPin, 1)
     pi.stop()
     
