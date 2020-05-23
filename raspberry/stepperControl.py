@@ -4,18 +4,25 @@ import pigpio
 
 class StepperMotor:
     def __init__(self, daemon, enabPin, stepPin, dirPin):
-        self.enabPin = enabPin
-        self.stepPin = stepPin
-        self.dirPin  = dirPin
-        self.daemon  = daemon
+        self.enabPin     = enabPin
+        self.stepPin     = stepPin
+        self.dirPin      = dirPin
+        self.daemon      = daemon
 
         daemon.set_mode(enabPin, pigpio.OUTPUT)
+        daemon.set_mode(dm0Pin, pigpio.OUTPUT)
+        daemon.set_mode(dm1Pin, pigpio.OUTPUT)
+        daemon.set_mode(dm2Pin, pigpio.OUTPUT)
         daemon.set_mode(dirPin, pigpio.OUTPUT)
         daemon.set_mode(stepPin, pigpio.OUTPUT)
+        daemon.set_mode(limMaxPin, pigpio.INPUT)
+        daemon.set_mode(limMinPin, pigpio.INPUT)
+        daemon.set_mode(fltPin, pigpio.INPUT)
+        daemon.set_pull_up_down(A_limMaxPin, pigpio.PUD_UP)
+        daemon.set_pull_up_down(A_limMinPin, pigpio.PUD_UP)
+    
 
-    def switchEnabState(self):
-        self.daemon.write(self.enabPin, not bool(self.daemon.read(self.enabPin)))
-        return self.daemon.read(self.enabPin)
+
 
 # helpers
 
