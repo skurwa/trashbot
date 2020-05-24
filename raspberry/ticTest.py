@@ -57,38 +57,42 @@ def getMotorAngles(target_x, target_y):
 		return None, None
 
 def convMotorAngToStepPose(motorAngles, stepMode):
+	try:
+		stepSize = stepModeDict[stepMode]
+	except:
+		# assume full steps
+		stepSize = 1
+	
 	if motorAngles[0] != None:
-		return int(motorAngles[0] * stepMode), int(motorAngles[1]*stepMode)
+		return int(motorAngles[0] * stepSize), int(motorAngles[1]*stepSize)
 	return None, None
 
 lastTime = 0
 
 stepper1.reset()
+stepper2.reset()
 stepper1.energize()
+stepper2.energize()
 
 try:
 	while True:
-		if stepper1.currentVelocity == 0:
-			# get desired coordinates from user
-			target_x, target_y = list(map(int,input("Enter desired pose: ").strip().split(',')))
-
-			# convert to step frame
-			motorAng = getMotorAngles(target_x, target_y) 
-			print(motorAng)
-			
-			motorStepPose = convMotorAngToStepPose(motorAng, 4)
-			print(motorStepPose)
-
-			# send desired pose to motor
-			if motorStepPose[0] != None:
-				stepper1.setTargetPosition(motorStepPose[0])
-				stepper2.setTargetPosition(motorStepPose[1])
-
 		if time.time() - lastTime > .1:
 			stepper1.getStatus()
 			stepper2.getStatus()
 			lastTime = time.time()
 
+		if stepper1.currentVelocity == 0 and stepper2.currentVelocity == 0:
+			# get desired coordinates from user
+			target_x, target_y = list(map(int,input("Enter desired pose: ").strip().split(',')))
+
+			# convert to step frame
+			motorAng 		= getMotorAngles(target_x, target_y) 
+			motorStepPose 	= convMotorAngToStepPose(motorAng, 4)
+
+			# send desired pose to motor
+			if motorStepPose[0] != None:
+				stepper1.setTargetPosition(motorStepPose[0])
+				stepper2.setTargetPosition(motorStepPose[1])
 
 except KeyboardInterrupt:
 	stepper1.deenergize()
