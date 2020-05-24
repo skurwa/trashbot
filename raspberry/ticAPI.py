@@ -1,17 +1,33 @@
 import subprocess
 import yaml
 
+stepModeDict = {'Full step': 1, '1/2 step': 2, '1/4 step': 4, '1/8 step': 8, '1/16 step': 16, '1/32 step': 32}
+
 class TicStepper:
 	def __init__(self, ticSerial = ''):
 		self.serial_id = ticSerial
+		self.getStatus()
 
 	def ticcmd(self, *args):
 		if self.serial_id != '':
 			return subprocess.check_output(['ticcmd', '-d', str(self.serial_id)] + list(args))
 		else:
 			return subprocess.check_output(['ticcmd'] + list(args))
+	def getStatusFull(self):
+		status = yaml.load(self.ticcmd('-s', '--full'), yaml.Loader)
+		self.currentLimit 		= status['Current limit']
+		self.stepMode	  		= status['Step mode']
+		self.errors		  		= status['Errors currently stopping the motor']
+		self.currentVelocity 	= status['Current velocity']
+		self.currentPosition 	= status['Current position']
+		self.positionUncertain 	= status['Position uncertain']
+
 	def getStatus(self):
-		return yaml.load(self.ticcmd('-s', '--full'), yaml.Loader)
+		status = yaml.load(self.ticcmd('-s'), yaml.Loader)
+		self.errors		  		= status['Errors currently stopping the motor']
+		self.currentVelocity 	= status['Current velocity']
+		self.currentPosition 	= status['Current position']
+		self.positionUncertain 	= status['Position uncertain']
 
 	def setTargetPosition(self, new_target):
 		self.ticcmd('--exit-safe-start', '--position', str(new_target))
