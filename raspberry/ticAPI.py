@@ -1,6 +1,8 @@
+import RPi.GPIO as GPIO
 import subprocess
 import yaml
 
+GPIO.setmode(GPIO.BCM)
 stepModeDict = {'Full step': 1, '1/2 step': 2, '1/4 step': 4, '1/8 step': 8, '1/16 step': 16, '1/32 step': 32}
 
 class TicStepper:
@@ -89,3 +91,45 @@ class TicStepper:
 	def setDecayMode(self, mode):
 		self.ticcmd('--decay', str(mode))
 
+
+class Relay:
+	def __init__(self, switchPin1, switchPin2, switchPin3, switchPin4):
+		GPIO.setup(switchPin1, GPIO.OUT)
+		GPIO.setup(switchPin2, GPIO.OUT)
+		GPIO.setup(switchPin3, GPIO.OUT)
+		GPIO.setup(switchPin4, GPIO.OUT)
+
+		self.switch1 = switchPin1
+		self.swtich2 = switchPin2
+		self.switch3 = switchPin3
+		self.switch4 = switchPin4
+
+		GPIO.output(switchPin1, GPIO.LOW)
+		GPIO.output(switchPin2, GPIO.LOW)
+		GPIO.output(switchPin3, GPIO.LOW)
+		GPIO.output(switchPin4, GPIO.LOW)
+
+
+
+
+class Robot:
+    def __init__(self, stepper1, stepper2, relay):
+        self.stepper1 = stepper1
+        self.stepper2 = stepper2
+        self.relay = relay
+
+    # initialize steppers
+    def startUp(self):
+        self.stepper1.getStatus()
+        self.stepper2.getStatus()
+        
+        return
+
+    def cmdGrip(self):
+        return
+
+    def cmdRelease(self):
+        return
+
+    def move(self):
+		return
