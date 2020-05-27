@@ -16,7 +16,7 @@ def alphaB(y_EE, e):
 	return y_EE - e
 
 def alphaC(b, c, A, B):
-	return ((b*b) - (c*c) + (A*A) + (B*B)) / (2* b)
+	return ((b * b) - (c * c) + (A * A) + (B * B)) / (2 * b)
 
 def betaSimX(x_EE, d):
 	return x_EE + d
@@ -28,13 +28,13 @@ def betaB(y_EE, e):
 	return y_EE - e
 
 def betaC(a, b, c, xSim, B):
-	return ((b*b) + (a - xSim)*(a - xSim) - (c*c) + (B*B)) / (2*b)
+	return ((b * b) + (a - xSim) * (a - xSim) - (c * c) + (B * B)) / (2 * b)
 
 def alpha(A, B, C):
-	return math.degrees(2 * math.atan((B + math.sqrt((A*A) + (B*B) - (C*C)))/(A + C))) + 1.08
+	return math.degrees(2 * math.atan((B + math.sqrt((A * A) + (B * B) - (C * C))) / (A + C))) + 1.08
 
 def beta(A, B, C):
-	return math.degrees(2 * math.atan((B - math.sqrt((A*A) + (B*B) - (C*C)))/(A + C))) - 1.08
+	return math.degrees(2 * math.atan((B - math.sqrt((A * A) + (B * B) - (C * C))) / (A + C))) - 1.08
 
 def getMotorAngles(target_x, target_y):
 	curAlphaA = alphaA(target_x, d)
@@ -51,13 +51,18 @@ def getMotorAngles(target_x, target_y):
 	except:
 		return None, None
 
-def convMotorAngToStepPose(motorAngles, stepMode):
+def convMotorAngToStepPose(motorAngles, stepMode1, stepMode2):
 	try:
-		stepSize = stepModeDict[stepMode]
+		stepSize1 = stepModeDict[stepMode]
 	except:
 		# assume full steps if step mode not in dict
-		stepSize = 1
+		stepSize1 = 1
+
+	try:
+		stepSize2 = stepModeDict[stepMode]
+	except:
+		stepSize2 = 1
 	
 	if motorAngles[0] != None:
-		return int(motorAngles[0] * stepSize), int(motorAngles[1]*stepSize)
+		return int(motorAngles[0] * stepSize1), int(motorAngles[1] * stepSize2)
 	return None, None

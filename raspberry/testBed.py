@@ -1,16 +1,20 @@
-from time import sleep
-import pigpio
+import kinematics as km
 
-A_limitMaxPin = 15
+stepMode = 'Full step'
+ang = km.getMotorAngles(250, 600)
+print('ang: {}'.format(ang))
 
-# connect to PiGPIO daemon
-pi = pigpio.pi()
+step = km.convMotorAngToStepPose(ang, stepMode)
+print('step: {}, stepMode: {}'.format(step, stepMode))
 
-pi.set_mode(A_limitMaxPin, pigpio.INPUT)
-pi.set_pull_up_down(A_limitMaxPin, pigpio.PUD_UP)
+stepMode = '1/2 step'
+step = km.convMotorAngToStepPose(ang, stepMode)
+print('step: {}, stepMode: {}'.format(step, stepMode))
 
+stepMode = '1/4 step'
+step = km.convMotorAngToStepPose(ang, stepMode)
+print('step: {}, stepMode: {}'.format(step, stepMode))
 
-
-
-    
-
+stepMode = '1/8 step'
+step = km.convMotorAngToStepPose(ang, stepMode)
+print('step: {}, stepMode: {}'.format(step, stepMode))

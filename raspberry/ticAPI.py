@@ -24,12 +24,16 @@ class TicStepper:
 		self.currentPosition 	= status['Current position']
 		self.positionUncertain 	= status['Position uncertain']
 
+		return status
+
 	def getStatus(self):
 		status = yaml.load(self.ticcmd('-s'), yaml.Loader)
 		self.errors		  		= status['Errors currently stopping the motor']
 		self.currentVelocity 	= status['Current velocity']
 		self.currentPosition 	= status['Current position']
 		self.positionUncertain 	= status['Position uncertain']
+
+		return status
 
 	def setTargetPosition(self, new_target):
 		self.ticcmd('--exit-safe-start', '--position', str(new_target))
@@ -108,9 +112,6 @@ class Relay:
 		GPIO.output(switchPin2, GPIO.LOW)
 		GPIO.output(switchPin3, GPIO.LOW)
 		GPIO.output(switchPin4, GPIO.LOW)
-
-
-
 
 class Robot:
     def __init__(self, stepper1, stepper2, relay):
