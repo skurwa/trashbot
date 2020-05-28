@@ -96,7 +96,7 @@ class TicStepper:
 		self.ticcmd('--decay', str(mode))
 
 
-class Relay:
+class FourRelayModule:
 	def __init__(self, switchPin1, switchPin2, switchPin3, switchPin4):
 		GPIO.setup(switchPin1, GPIO.OUT)
 		GPIO.setup(switchPin2, GPIO.OUT)
@@ -113,6 +113,30 @@ class Relay:
 		GPIO.output(switchPin3, GPIO.LOW)
 		GPIO.output(switchPin4, GPIO.LOW)
 
+	def on1(self):
+		GPIO.output(self.switchPin1, GPIO.HIGH)
+
+	def off1(self):
+		GPIO.output(self.switchPin1, GPIO.LOW)
+
+	def on2(self):
+		GPIO.output(self.switchPin1, GPIO.HIGH)
+
+	def off2(self):
+		GPIO.output(self.switchPin1, GPIO.LOW)
+
+	def on3(self):
+		GPIO.output(self.switchPin1, GPIO.HIGH)
+
+	def off3(self):
+		GPIO.output(self.switchPin1, GPIO.LOW)
+
+	def on4(self):
+		GPIO.output(self.switchPin1, GPIO.HIGH)
+
+	def off4(self):
+		GPIO.output(self.switchPin1, GPIO.LOW)
+
 class Robot:
     def __init__(self, stepper1, stepper2, relay):
         self.stepper1 = stepper1
@@ -121,16 +145,26 @@ class Robot:
 
     # initialize steppers
     def startUp(self):
-        self.stepper1.getStatus()
-        self.stepper2.getStatus()
-        
-        return
-
+        self.stepper1.getStatusFull()
+        self.stepper2.getStatusFull()
+	
     def cmdGrip(self):
-        return
+		self.relay.on1()
 
     def cmdRelease(self):
-        return
+		self.relay.off1()
 
-    def move(self):
-		return
+	def cmdFlick(self):
+		self.relay.on2()
+
+    def cmdReturn(self):
+		self.relay.off2()
+
+	def move(self, xPose, yPose):
+		# convert cartesian to step coordinates
+		motorStepPose = km.convMotorAngToStepPose(km.getMotorAngles(xPose, yPose), self.stepper1.stepMode, self.stepper2.stepMode)
+
+		# send desired pose to motor
+		if motorStepPose[0] != None:
+			stepper1.setTargetPosition(motorStepPose[0])
+			stepper2.setTargetPosition(motorStepPose[1])

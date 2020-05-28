@@ -1,20 +1,11 @@
 import kinematics as km
 
-stepMode = 'Full step'
+stepModes = ['Full step', '1/2 step', '1/4 step', '1/8 step']
+
 ang = km.getMotorAngles(250, 600)
 print('ang: {}'.format(ang))
 
-step = km.convMotorAngToStepPose(ang, stepMode)
-print('step: {}, stepMode: {}'.format(step, stepMode))
-
-stepMode = '1/2 step'
-step = km.convMotorAngToStepPose(ang, stepMode)
-print('step: {}, stepMode: {}'.format(step, stepMode))
-
-stepMode = '1/4 step'
-step = km.convMotorAngToStepPose(ang, stepMode)
-print('step: {}, stepMode: {}'.format(step, stepMode))
-
-stepMode = '1/8 step'
-step = km.convMotorAngToStepPose(ang, stepMode)
-print('step: {}, stepMode: {}'.format(step, stepMode))
+for stepMode in stepModes:
+    
+    step = km.convMotorAngToStepPose(ang, stepMode, stepMode)
+    print('step: {}, stepMode: {}'.format(step, stepMode))

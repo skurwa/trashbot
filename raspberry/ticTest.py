@@ -30,7 +30,6 @@ try:
 			stepper1.getStatus()
 			stepper2.getStatus()
 			
-		
 			# only start move sequence if robot not moving and not errored
 			if stepper1.currentVelocity == 0 and stepper2.currentVelocity == 0 and not (stepper1.errors or stepper2.errors):
 				# get desired coordinates from user
@@ -54,8 +53,6 @@ try:
 			
 			if stepper2.errors:
 				print('Stepper 2 errors: ', str(stepper2.errors))
-
-
 
 # cleanup on exit
 except KeyboardInterrupt:

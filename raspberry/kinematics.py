@@ -53,13 +53,13 @@ def getMotorAngles(target_x, target_y):
 
 def convMotorAngToStepPose(motorAngles, stepMode1, stepMode2):
 	try:
-		stepSize1 = stepModeDict[stepMode]
+		stepSize1 = stepModeDict[stepMode1]
 	except:
 		# assume full steps if step mode not in dict
 		stepSize1 = 1
 
 	try:
-		stepSize2 = stepModeDict[stepMode]
+		stepSize2 = stepModeDict[stepMode2]
 	except:
 		stepSize2 = 1
 	
