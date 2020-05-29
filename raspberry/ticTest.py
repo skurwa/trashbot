@@ -1,21 +1,20 @@
-import ticAPI
+import robot
 import kinematics as km
 import time
 
 # setup
-stepper1 = ticAPI.TicStepper(ticSerial = '00307501')
-stepper2 = ticAPI.TicStepper(ticSerial = '')
+stepper1 = robot.TicStepper(ticSerial = '00307466')
+stepper2 = robot.TicStepper(ticSerial = '00307491')
+relay	 = robot.FourRelayModule(None, None, None, None)
+
+sparrow = robot.Robot(stepper1, stepper2, relay)
 
 # task timing
 currentTime   	= 0
 last5000msTime	= 0
 last100msTime	= 0
 
-stepper1.energize()
-stepper2.energize()
-
-stepper1.getStatusFull()
-stepper2.getStatusFull()
+sparrow.startUp()
 
 # loop running
 try:
@@ -26,22 +25,24 @@ try:
 		# 100ms task
 		if currentTime - last100msTime > .1:
 			lastTime = currentTime
-
-			stepper1.getStatus()
-			stepper2.getStatus()
+			sparrow.getChildStatus()
 			
-			# only start move sequence if robot not moving and not errored
-			if stepper1.currentVelocity == 0 and stepper2.currentVelocity == 0 and not (stepper1.errors or stepper2.errors):
-				# get desired coordinates from user
-				target_x, target_y = list(map(int,input("Enter desired pose: ").strip().split(',')))
+			pointPath = [[200,700],[300,1000],[450,800]]
+			
+			sparrow.cmdMovePath(pointPath)
+			
+			## MANUAL MOVES: only start move sequence if robot not moving and not errored
+			# if stepper1.currentVelocity == 0 and stepper2.currentVelocity == 0 and not (stepper1.errors or stepper2.errors):
+			# 	# get desired coordinates from user
+			# 	target_x, target_y = list(map(int,input("Enter desired pose: ").strip().split(',')))
 
-				# convert to step frame
-				motorStepPose = km.convMotorAngToStepPose(km.getMotorAngles(target_x, target_y), stepper1.stepMode, stepper2.stepMode)
+			# 	# convert to step frame
+			# 	motorStepPose = km.convMotorAngToStepPose(km.getMotorAngles(target_x, target_y), stepper1.stepMode, stepper2.stepMode)
 
-				# send desired pose to motor
-				if motorStepPose[0] != None:
-					stepper1.setTargetPosition(motorStepPose[0])
-					stepper2.setTargetPosition(motorStepPose[1])
+			# 	# send desired pose to motor
+			# 	if motorStepPose[0] != None:
+			# 		stepper1.setTargetPosition(motorStepPose[0])
+			# 		stepper2.setTargetPosition(motorStepPose[1])
 
 		# 5000ms task
 		if currentTime - last5000msTime > 5:

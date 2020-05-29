@@ -64,5 +64,5 @@ def convMotorAngToStepPose(motorAngles, stepMode1, stepMode2):
 		stepSize2 = 1
 	
 	if motorAngles[0] != None:
-		return int(motorAngles[0] * stepSize1), int(motorAngles[1] * stepSize2)
+		return int(motorAngles[0] * stepSize1 * 200 / 360), int(motorAngles[1] * stepSize2 * 200 /360)
 	return None, None
