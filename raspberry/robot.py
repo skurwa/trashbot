@@ -154,7 +154,9 @@ class Robot:
 		self.stepper1 = stepper1
 		self.stepper2 = stepper2
 		self.relay = relay
+		self.currentPathIdx = 0
 		self.pathActive = False
+		self.pathComplete = False
 
     # initialize steppers
 	def startUp(self):
@@ -194,24 +196,25 @@ class Robot:
 			self.stepper2.setTargetPosition(motorStepPose[1])
 			return 1
 		else:
-			print('Invalid pose')
-			return 0
+			print('Invalid pose skipped: [{}, {}]'.format(xPose, yPose))
+
 	def cmdMovePath(self, movePath):
 		# one-shot at beginning of path
 		if not self.pathActive:
-			i = 0
-			pathLen = len(movePath)
+			self.currentPathIdx = 0
 			self.pathActive = True
+			self.pathComplete = False
 
 		# execute moves while path active
 		if self.pathActive:
 			if not (self.stepper1.stsMoving or self.stepper2.stsMoving):
-				self.cmdMove(movePath[i][0], movePath[i][1])
-				if i < pathLen:
-					i += 1
+				self.cmdMove(movePath[self.currentPathIdx][0], movePath[self.currentPathIdx][1])
+				if self.currentPathIdx < len(movePath):
+					self.currentPathIdx += 1
 
-		if i == pathLen:
+		if self.currentPathIdx == len(movePath):
 			self.pathActive = False
+			self.pathComplete = True
 		
 		
 			
